@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102033" />
+    <meta name="description" content="Business Guide AI Platform dashboard" />
+    <title>Business Guide AI Platform</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;500;600;700;800;900&display=swap");
+
+      :root {
+        --ink: #111827;
+        --muted: #667085;
+        --line: #d9e1ec;
+        --navy: #102033;
+        --blue: #2563eb;
+        --green: #0f766e;
+        --amber: #b45309;
+        --red: #b42318;
+        --surface: rgba(255, 255, 255, 0.94);
+        --soft: #f7f9fc;
+        --shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+        --font-sans:
+          Inter,
+          "Noto Sans Sinhala",
+          "Segoe UI Variable",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        --font-display:
+          Inter,
+          "Noto Sans Sinhala",
+          "Segoe UI Variable Display",
+          "Segoe UI",
+          system-ui,
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(135deg, rgba(37, 99, 235, 0.1), transparent 30%),
+          linear-gradient(225deg, rgba(15, 118, 110, 0.1), transparent 30%),
+          #eef3f8;
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-feature-settings:
+          "cv02" 1,
+          "cv03" 1,
+          "cv04" 1,
+          "cv11" 1;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 18px;
+        width: min(1500px, 100%);
+        margin: 0 auto;
+      }
+
+      .navigation-rail {
+        position: sticky;
+        top: 24px;
+        height: calc(100vh - 48px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        padding: 18px 12px;
+        border-radius: 8px;
+        background: rgba(16, 32, 51, 0.96);
+        box-shadow: var(--shadow);
+      }
+
+      .brand-mark,
+      .rail-item {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        font-weight: 900;
+      }
+
+      .brand-mark {
+        background: #ffffff;
+        color: var(--navy);
+      }
+
+      .rail-items {
+        display: grid;
+        gap: 12px;
+      }
+
+      .rail-item {
+        color: #b9c6d8;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .rail-item.active {
+        background: var(--blue);
+        color: #ffffff;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 16px;
+      }
+
+      .eyebrow {
+        margin: 0 0 6px;
+        color: var(--blue);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        line-height: 1.12;
+        font-family: var(--font-display);
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        font-size: clamp(28px, 3vw, 42px);
+        max-width: 920px;
+      }
+
+      .subtitle {
+        max-width: 820px;
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.6;
+      }
+
+      .system-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 40px;
+        padding: 9px 13px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        color: #334155;
+        font-size: 14px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .state-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+      }
+
+      .summary-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .summary-card,
+      .planner-panel,
+      .output-panel,
+      .mini-card,
+      .report-panel {
+        border: 1px solid rgba(217, 225, 236, 0.95);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .summary-card {
+        min-width: 0;
+        padding: 14px 16px;
+      }
+
+      .summary-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .summary-card strong {
+        display: block;
+        margin: 5px 0;
+        color: var(--ink);
+        font-size: 21px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .mode-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .mode-tab {
+        display: grid;
+        gap: 5px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--ink);
+        cursor: pointer;
+        padding: 13px;
+        text-align: left;
+      }
+
+      .mode-tab strong {
+        font-size: 15px;
+      }
+
+      .mode-tab span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .mode-tab.active {
+        border-color: rgba(37, 99, 235, 0.55);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      }
+
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 420px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .planner-panel {
+        position: sticky;
+        top: 24px;
+        padding: 18px;
+      }
+
+      .panel-heading,
+      .section-title,
+      .output-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .panel-heading {
+        margin-bottom: 16px;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .field-group {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .field-group.full {
+        grid-column: 1 / -1;
+      }
+
+      .field-group label {
+        color: #344256;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .field-group input,
+      .field-group select,
+      .field-group textarea {
+        width: 100%;
+        border: 1px solid #cbd6e5;
+        border-radius: 8px;
+        background: #fbfdff;
+        color: var(--ink);
+        outline: none;
+        padding: 11px 12px;
+        font-weight: 600;
+      }
+
+      .field-group textarea {
+        min-height: 150px;
+        line-height: 1.55;
+        resize: vertical;
+        font-weight: 500;
+      }
+
+      .field-group input:focus,
+      .field-group select:focus,
+      .field-group textarea:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+      }
+
+      .primary-button,
+      .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 900;
+      }
+
+      .primary-button {
+        width: 100%;
+        border: 0;
+        background: var(--blue);
+        color: #ffffff;
+      }
+
+      .secondary-button {
+        border: 1px solid var(--line);
+        background: #ffffff;
+        color: #334155;
+        padding: 0 14px;
+      }
+
+      .primary-button:disabled {
+        cursor: wait;
+        background: #8ca2c9;
+      }
+
+      .error-box {
+        display: none;
+        gap: 4px;
+        margin-top: 14px;
+        padding: 12px;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        background: #fff5f5;
+        color: var(--red);
+        line-height: 1.45;
+      }
+
+      .error-box.show {
+        display: grid;
+      }
+
+      .timeline-card {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+
+      .timeline-step {
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .timeline-step span {
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--green);
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+      }
+
+      .timeline-step p {
+        margin: 0;
+      }
+
+      .output-panel {
+        min-height: 680px;
+        padding: 18px;
+      }
+
+      .output-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .mini-card {
+        padding: 14px;
+        border-top: 4px solid var(--blue);
+      }
+
+      .mini-card.green {
+        border-top-color: var(--green);
+      }
+
+      .mini-card.amber {
+        border-top-color: var(--amber);
+      }
+
+      .mini-card strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .mini-card span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .report-panel {
+        overflow: hidden;
+      }
+
+      .section-title {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .section-title strong {
+        color: var(--ink);
+        text-transform: none;
+      }
+
+      .section-title.dark {
+        border-bottom-color: rgba(255, 255, 255, 0.12);
+        background: var(--navy);
+        color: #b9c6d8;
+      }
+
+      .section-title.dark strong {
+        color: #ffffff;
+      }
+
+      .report-body {
+        padding: 18px;
+        color: #263244;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.66;
+        white-space: pre-wrap;
+      }
+
+      .checklist {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+      }
+
+      .check-row {
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        color: #344256;
+        font-weight: 600;
+        line-height: 1.45;
+      }
+
+      .check-row input {
+        width: 18px;
+        height: 18px;
+        margin-top: 2px;
+      }
+
+      .empty-note {
+        display: grid;
+        place-items: center;
+        min-height: 560px;
+        padding: 32px;
+        border: 1px dashed #cbd6e5;
+        border-radius: 8px;
+        background: #f8fafc;
+        text-align: center;
+      }
+
+      .empty-note p {
+        max-width: 620px;
+        margin: 10px auto 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      @media print {
+        .navigation-rail,
+        .planner-panel,
+        .mode-tabs,
+        .summary-strip,
+        .output-actions,
+        .topbar .system-state {
+          display: none;
+        }
+
+        body {
+          background: #ffffff;
+        }
+
+        .app-shell {
+          padding: 0;
+        }
+
+        .workspace,
+        .layout-grid {
+          display: block;
+          width: 100%;
+        }
+
+        .output-panel,
+        .report-panel {
+          box-shadow: none;
+          border: 0;
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .layout-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .planner-panel {
+          position: static;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .app-shell {
+          padding: 14px;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .navigation-rail {
+          position: static;
+          height: auto;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .rail-items {
+          display: flex;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .summary-strip,
+        .mode-tabs,
+        .mini-grid,
+        .field-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <main class="app-shell">
+        <section class="workspace">
+          <aside class="navigation-rail" aria-label="Workspace">
+            <div class="brand-mark">BG</div>
+            <div class="rail-items">
+              <div class="rail-item active" title="Start">S</div>
+              <div class="rail-item" title="Crisis">C</div>
+              <div class="rail-item" title="Plan">P</div>
+            </div>
+          </aside>
+
+          <section>
+            <header class="topbar">
+              <div>
+                <p class="eyebrow">Business Guide AI Platform</p>
+                <h1>Start, Stabilize, and Recover Any Business</h1>
+                <p class="subtitle">
+                  A professional business command center for beginners and owners:
+                  build a new business from zero, diagnose weak points, and recover
+                  step by step when a crisis damages revenue, cash flow, or operations.
+                </p>
+              </div>
+              <div class="system-state">
+                <span class="state-dot"></span>
+                <span id="statusText">Ready</span>
+              </div>
+            </header>
+
+            <section class="summary-strip">
+              <div class="summary-card">
+                <span>Guidance Areas</span>
+                <strong>8</strong>
+                <span>Idea, market, finance, law, team, ops, sales, recovery</span>
+              </div>
+              <div class="summary-card">
+                <span>Boardroom Agents</span>
+                <strong>3</strong>
+                <span>Financial, Legal, Project Manager</span>
+              </div>
+              <div class="summary-card">
+                <span>Planning Horizon</span>
+                <strong>90 Days</strong>
+                <span>Launch or recovery execution roadmap</span>
+              </div>
+              <div class="summary-card">
+                <span>Session</span>
+                <strong id="sessionShort">Local</strong>
+                <span id="sessionTime">Not saved yet</span>
+              </div>
+            </section>
+
+            <section class="mode-tabs">
+              <button class="mode-tab active" type="button" data-mode="launch">
+                <strong>Start New Business</strong>
+                <span>Guide a beginner from idea validation to first sales.</span>
+              </button>
+              <button class="mode-tab" type="button" data-mode="crisis">
+                <strong>Crisis Recovery</strong>
+                <span>Recover after revenue loss, debt pressure, or operational failure.</span>
+              </button>
+              <button class="mode-tab" type="button" data-mode="scale">
+                <strong>Stabilize and Scale</strong>
+                <span>Improve systems, team, profitability, and customer growth.</span>
+              </button>
+            </section>
+
+            <section class="layout-grid">
+              <form class="planner-panel" id="guideForm">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow" id="formEyebrow">Launch Guide</p>
+                    <h2 id="formTitle">Business Builder Brief</h2>
+                  </div>
+                </div>
+
+                <div class="field-grid">
+                  <div class="field-group">
+                    <label for="businessCategory">Business Type</label>
+                    <input id="businessCategory" required value="Small Restaurant" />
+                  </div>
+
+                  <div class="field-group">
+                    <label for="stage">Current Stage</label>
+                    <select id="stage">
+                      <option>Only idea</option>
+                      <option>Planning</option>
+                      <option>Already running</option>
+                      <option>In crisis</option>
+                      <option>Ready to scale</option>
+                    </select>
+                  </div>
+
+                  <div class="field-group">
+                    <label for="budget">Available Budget</label>
+                    <input id="budget" value="LKR 500,000" />
+                  </div>
+
+                  <div class="field-group">
+                    <label for="market">Target Market</label>
+                    <input id="market" value="Local families and office workers" />
+                  </div>
+
+                  <div class="field-group full">
+                    <label for="challenge">Goal or Crisis Description</label>
+                    <textarea id="challenge" required>A beginner wants to start a small restaurant but does not know how to validate the idea, manage costs, register legally, hire staff, attract customers, and survive the first 90 days.</textarea>
+                  </div>
+                </div>
+
+                <button class="primary-button" id="submitButton" type="submit">
+                  Generate Step-by-Step Guide
+                </button>
+
+                <div class="error-box" id="errorBox">
+                  <strong>Backend unavailable</strong>
+                  <span id="errorText"></span>
+                </div>
+
+                <div class="timeline-card">
+                  <div class="timeline-step">
+                    <span></span>
+                    <p>Clarify goal and current business stage</p>
+                  </div>
+                  <div class="timeline-step">
+                    <span></span>
+                    <p>Build finance, legal, operations, and sales plan</p>
+                  </div>
+                  <div class="timeline-step">
+                    <span></span>
+                    <p>Convert advice into weekly execution checklist</p>
+                  </div>
+                </div>
+              </form>
+
+              <section class="output-panel" id="outputPanel">
+                <div class="output-actions">
+                  <button class="secondary-button" id="demoLaunch" type="button">Example Launch Plan</button>
+                  <button class="secondary-button" id="demoCrisis" type="button">Example Crisis Recovery</button>
+                  <button class="secondary-button" id="printPlan" type="button">Print / Save PDF</button>
+                </div>
+
+                <div class="empty-note">
+                  <div>
+                    <h2>Your business command plan will appear here</h2>
+                    <p>
+                      Choose a mode, describe the business or crisis, then generate a
+                      beginner-friendly, step-by-step guide covering finance, legal,
+                      marketing, operations, team, risk, and recovery execution.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:8000/api/boardroom/analyze";
+
+      const state = { mode: "launch" };
+      const modeTabs = document.querySelectorAll(".mode-tab");
+      const form = document.getElementById("guideForm");
+      const categoryInput = document.getElementById("businessCategory");
+      const stageInput = document.getElementById("stage");
+      const budgetInput = document.getElementById("budget");
+      const marketInput = document.getElementById("market");
+      const challengeInput = document.getElementById("challenge");
+      const outputPanel = document.getElementById("outputPanel");
+      const submitButton = document.getElementById("submitButton");
+      const statusText = document.getElementById("statusText");
+      const errorBox = document.getElementById("errorBox");
+      const errorText = document.getElementById("errorText");
+      const sessionShort = document.getElementById("sessionShort");
+      const sessionTime = document.getElementById("sessionTime");
+      const formEyebrow = document.getElementById("formEyebrow");
+      const formTitle = document.getElementById("formTitle");
+
+      const examples = {
+        launch: {
+          category: "Small Restaurant",
+          stage: "Only idea",
+          budget: "LKR 500,000",
+          market: "Local families and office workers",
+          challenge:
+            "A beginner wants to start a small restaurant but does not know how to validate the idea, manage costs, register legally, hire staff, attract customers, and survive the first 90 days.",
+        },
+        crisis: {
+          category: "Retail Clothing Shop",
+          stage: "In crisis",
+          budget: "LKR 120,000 emergency cash",
+          market: "Walk-in customers and online buyers",
+          challenge:
+            "Sales dropped by 60%, rent and supplier payments are overdue, staff morale is low, and the owner needs a step-by-step plan to save the business within 30 days.",
+        },
+        scale: {
+          category: "Freelance Design Agency",
+          stage: "Ready to scale",
+          budget: "LKR 300,000",
+          market: "SMEs needing branding, websites, and social media design",
+          challenge:
+            "The agency has clients but delivery is inconsistent, cash flow is unpredictable, pricing is too low, and the founder wants systems to grow profitably.",
+        },
+      };
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function applyExample(mode) {
+        const example = examples[mode];
+        categoryInput.value = example.category;
+        stageInput.value = example.stage;
+        budgetInput.value = example.budget;
+        marketInput.value = example.market;
+        challengeInput.value = example.challenge;
+      }
+
+      function setMode(mode) {
+        state.mode = mode;
+        modeTabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.mode === mode));
+        formEyebrow.textContent =
+          mode === "launch" ? "Launch Guide" : mode === "crisis" ? "Recovery Guide" : "Scale Guide";
+        formTitle.textContent =
+          mode === "launch"
+            ? "Business Builder Brief"
+            : mode === "crisis"
+              ? "Crisis Recovery Brief"
+              : "Stabilization Brief";
+        applyExample(mode);
+      }
+
+      function buildChecklist(mode) {
+        const launch = [
+          "Write the business idea in one sentence and define the exact customer.",
+          "Interview 10 potential customers before spending major money.",
+          "Calculate startup cost, monthly fixed cost, gross margin, and break-even sales.",
+          "Register the business, open a separate bank account, and keep receipts from day one.",
+          "Create a simple offer, price list, supplier list, and first sales channel.",
+          "Launch with a small test version before expanding.",
+          "Review cash flow, customer feedback, and sales every week.",
+        ];
+        const crisis = [
+          "Freeze all non-essential expenses today.",
+          "List cash in hand, debt due dates, rent, payroll, supplier bills, and daily sales.",
+          "Call key suppliers, landlord, and lenders to renegotiate payment schedules.",
+          "Focus only on products or services that bring fast cash and healthy margin.",
+          "Communicate honestly with staff and assign one owner per recovery action.",
+          "Run a 7-day sales push and track cash daily.",
+          "Review legal risks before terminating contracts, staff, leases, or supplier agreements.",
+        ];
+        const scale = [
+          "Identify the most profitable customer segment and stop chasing weak work.",
+          "Standardize pricing, delivery process, quality checks, and client onboarding.",
+          "Build weekly cash-flow tracking and monthly profit review.",
+          "Document repeatable operations before hiring more people.",
+          "Create a sales pipeline with clear follow-up stages.",
+          "Track customer satisfaction, delivery time, margin, and repeat revenue.",
+          "Invest only in tools or team roles that remove a clear growth bottleneck.",
+        ];
+        return mode === "launch" ? launch : mode === "crisis" ? crisis : scale;
+      }
+
+      function buildLocalReport(mode, details) {
+        const title =
+          mode === "launch"
+            ? "New Business Launch Blueprint"
+            : mode === "crisis"
+              ? "Business Crisis Recovery Blueprint"
+              : "Stabilize and Scale Blueprint";
+
+        const opening =
+          mode === "launch"
+            ? "The goal is to move from idea to first paying customers with controlled risk, clear pricing, legal basics, simple operations, and weekly learning."
+            : mode === "crisis"
+              ? "The goal is to protect cash, stop the damage, reduce legal exposure, recover sales, and rebuild operational control in a disciplined 30-day cycle."
+              : "The goal is to strengthen profit, systems, team execution, customer retention, and scalable sales without losing control of quality or cash.";
+
+        return `# ${title}
+
+Business Type: ${details.category}
+Current Stage: ${details.stage}
+Budget: ${details.budget}
+Target Market: ${details.market}
+
+Situation:
+${details.challenge}
+
+Executive Direction:
+${opening}
+
+1. Business Model And Customer Clarity
+- Define the ideal customer, their problem, and why they should choose this business.
+- Validate demand with interviews, pre-orders, sample sales, or a small pilot.
+- Keep the first offer simple: one clear promise, one core audience, one measurable result.
+
+2. Financial Plan
+- Separate personal money from business money immediately.
+- Estimate startup cost, fixed monthly cost, variable cost, expected revenue, and break-even point.
+- Track daily cash, weekly sales, gross margin, debt, and supplier obligations.
+- For crisis recovery, freeze non-essential spending and renegotiate every major payment.
+
+3. Legal And Compliance
+- Register the business according to local rules and keep tax/accounting records from day one.
+- Review lease, supplier, employment, customer, loan, and insurance obligations.
+- Use written agreements for partners, staff, suppliers, and important customers.
+- During crisis, avoid promises you cannot keep and document all negotiations.
+
+4. Sales And Marketing
+- Choose the fastest practical sales channel for the target market.
+- Build a simple message: customer problem, benefit, price, proof, and call to action.
+- Use weekly campaigns, customer follow-ups, referrals, social proof, and local partnerships.
+- Measure leads, conversion rate, average order value, repeat customers, and customer feedback.
+
+5. Operations
+- Write the daily operating checklist: opening tasks, quality checks, stock, customer handling, payments, and closing review.
+- Identify the few activities that must never fail.
+- Create backup suppliers and basic risk controls.
+- Review performance every week and remove bottlenecks.
+
+6. Team And Leadership
+- Assign one owner for finance, one for operations, one for sales, and one for customer experience.
+- Use short daily check-ins during crisis and weekly reviews during normal growth.
+- Train staff on the customer promise, quality standards, and escalation rules.
+
+7. 0-7 Day Action Plan
+- Clarify offer, customer, budget, and immediate risks.
+- Build a cash view and list all urgent payments.
+- Contact customers, suppliers, landlord, lenders, and partners where needed.
+- Start the fastest revenue action within 48 hours.
+
+8. 8-30 Day Action Plan
+- Test or relaunch the offer.
+- Track money and customer response every week.
+- Fix legal, supplier, staffing, and operational weaknesses.
+- Cut low-value activity and focus on profitable customers.
+
+9. 31-90 Day Action Plan
+- Standardize the process that worked.
+- Improve pricing, margin, team roles, and marketing channels.
+- Build repeatable sales and customer retention.
+- Review whether to expand, pause, pivot, or seek funding.
+
+Key Metrics:
+- Cash in hand
+- Weekly sales
+- Gross margin
+- Break-even progress
+- Customer acquisition cost
+- Repeat customers
+- Debt/payment risk
+- Operational quality
+
+Final Advice:
+Do not try to fix everything at once. Protect cash, serve the best customers, obey legal obligations, track numbers weekly, and execute one clear plan with accountable owners.`;
+      }
+
+      function renderReport(mode, details, report, boardroom) {
+        const checklist = buildChecklist(mode);
+        const label =
+          mode === "launch" ? "Launch Plan" : mode === "crisis" ? "Recovery Plan" : "Scale Plan";
+        sessionShort.textContent = boardroom?.session_id ? boardroom.session_id.slice(0, 8) : "Local";
+        sessionTime.textContent = new Date().toLocaleString();
+
+        outputPanel.innerHTML = `
+          <div class="output-actions">
+            <button class="secondary-button" id="demoLaunch" type="button">Example Launch Plan</button>
+            <button class="secondary-button" id="demoCrisis" type="button">Example Crisis Recovery</button>
+            <button class="secondary-button" id="printPlan" type="button">Print / Save PDF</button>
+          </div>
+
+          <div class="output-header" style="margin-bottom: 16px;">
+            <div>
+              <p class="eyebrow">${escapeHtml(label)}</p>
+              <h2>${escapeHtml(details.category)}</h2>
+            </div>
+            <span class="secondary-button">${boardroom ? "AI Boardroom + Local Plan" : "Local Expert Plan"}</span>
+          </div>
+
+          <div class="mini-grid">
+            <article class="mini-card green">
+              <strong>Finance</strong>
+              <span>Cash flow, break-even, pricing, budget freeze, supplier payments, and runway discipline.</span>
+            </article>
+            <article class="mini-card amber">
+              <strong>Legal</strong>
+              <span>Registration, contracts, tax records, employee rules, notices, insurance, and risk documentation.</span>
+            </article>
+            <article class="mini-card">
+              <strong>Execution</strong>
+              <span>Weekly roadmap, accountable owners, customer action, operating checklist, and measurable KPIs.</span>
+            </article>
+          </div>
+
+          <article class="report-panel" style="margin-bottom: 16px;">
+            <div class="section-title dark">
+              <span>Step-by-Step Master Guide</span>
+              <strong>${escapeHtml(label)}</strong>
+            </div>
+            <div class="report-body">${escapeHtml(report)}</div>
+          </article>
+
+          ${
+            boardroom
+              ? `<article class="report-panel" style="margin-bottom: 16px;">
+                  <div class="section-title">
+                    <span>AI Boardroom Specialist Output</span>
+                    <strong>Financial + Legal + Project Manager</strong>
+                  </div>
+                  <div class="report-body">${escapeHtml(boardroom.final_recovery_plan)}</div>
+                </article>`
+              : ""
+          }
+
+          <article class="report-panel">
+            <div class="section-title">
+              <span>Execution Checklist</span>
+              <strong>Start Here</strong>
+            </div>
+            <div class="checklist">
+              ${checklist
+                .map(
+                  (item) => `
+                    <label class="check-row">
+                      <input type="checkbox" />
+                      <span>${escapeHtml(item)}</span>
+                    </label>
+                  `
+                )
+                .join("")}
+            </div>
+          </article>
+        `;
+        bindOutputButtons();
+      }
+
+      async function tryBoardroom(details) {
+        if (state.mode !== "crisis") return null;
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            business_category: details.category,
+            crisis_description: details.challenge,
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(typeof data.detail === "string" ? data.detail : "Backend request failed");
+        }
+        return data;
+      }
+
+      function getDetails() {
+        return {
+          category: categoryInput.value.trim(),
+          stage: stageInput.value,
+          budget: budgetInput.value.trim(),
+          market: marketInput.value.trim(),
+          challenge: challengeInput.value.trim(),
+        };
+      }
+
+      async function generatePlan() {
+        const details = getDetails();
+        errorBox.classList.remove("show");
+        statusText.textContent = "Analyzing";
+        submitButton.disabled = true;
+        submitButton.textContent = "Building Guide";
+
+        outputPanel.innerHTML = `
+          <div class="empty-note">
+            <div>
+              <h2>Building your business guide</h2>
+              <p>Finance, legal, marketing, operations, team, risk, and execution steps are being organized.</p>
+            </div>
+          </div>
+        `;
+
+        let boardroom = null;
+        try {
+          boardroom = await tryBoardroom(details);
+          statusText.textContent = "AI report ready";
+        } catch (error) {
+          if (state.mode === "crisis") {
+            errorText.textContent =
+              "FastAPI backend is not connected, so the site generated a local recovery plan instead.";
+            errorBox.classList.add("show");
+          }
+          statusText.textContent = "Plan ready";
+        } finally {
+          const localReport = buildLocalReport(state.mode, details);
+          renderReport(state.mode, details, localReport, boardroom);
+          submitButton.disabled = false;
+          submitButton.textContent = "Generate Step-by-Step Guide";
+        }
+      }
+
+      function bindOutputButtons() {
+        document.getElementById("demoLaunch")?.addEventListener("click", () => {
+          setMode("launch");
+          generatePlan();
+        });
+        document.getElementById("demoCrisis")?.addEventListener("click", () => {
+          setMode("crisis");
+          generatePlan();
+        });
+        document.getElementById("printPlan")?.addEventListener("click", () => window.print());
+      }
+
+      modeTabs.forEach((tab) => {
+        tab.addEventListener("click", () => setMode(tab.dataset.mode));
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        generatePlan();
+      });
+
+      bindOutputButtons();
+    </script>
+  </body>
+</html>
